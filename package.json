@@ -1,0 +1,12 @@
+{
+    "name": "spike",
+    "private": true,
+    "scripts": {
+        "dev": "turbo run dev",
+        "build": "turbo run build"
+    },
+    "devDependencies": {
+        "turbo": "^2.11.10"
+    },
+    "packageManager": "pnpm@12.4.2"
+}
