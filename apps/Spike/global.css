@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+@theme {
+  /** Customize Colors **/
+  --color-primary: #0C490C;
+  --color-secondary: #3EF13E;
+  --color-primary-background: #FFFFFF;
+  --color-input-background: #EBEBEC;
+  --color-input-border: #DEDEE000;
+  --color-text-black: #18181B;
+  --color-text-body: #71717A;
+  --color-error: #FF383C;
+  --color-error-background: #FF383C26;
+  --color-secondary-action: #F97316;
+  --color-active-tab: #0C490C;
+
+  /** Font Customize **/
+  --font-inter: 'Inter_18pt-Regular';
+  --font-inter-regular: 'Inter_18pt-Regular';
+  --font-inter-medium: 'Inter_18pt-Medium';
+  --font-figtree-light: 'Figtree-Light';
+  --font-figtree: 'Figtree-Regular';
+  --font-figtree-regular: 'Figtree-Regular';
+  --font-figtree-medium: 'Figtree-Medium';
+  --font-figtree-bold: 'Figtree-Bold';
+
+}

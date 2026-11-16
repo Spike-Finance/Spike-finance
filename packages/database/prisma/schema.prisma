@@ -5,11 +5,124 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  firstName       String?
+  lastName        String?
+  email           String?  @unique
+  phone           String?  @unique
+  userType        UserRole @default(USER)
+  password        String   @db.Text
+  isEmailVerified Boolean  @default(false)
+  isPhoneVerified Boolean  @default(false)
+  bvn             String?
+  NIN             String?
+  dateOfBirth     String?
+  transactionPin  String?
+  isLoggedIn      Boolean  @default(false)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  lastLoginAt DateTime?
+  pushToken   String?
+
+  userDevices UserDevice[]
+
+  addresses Address[]
+
+  pockets Pocket[]
+}
+
+model Address {
+  id            String  @id @default(cuid())
+  userId        String
+  streetAddress String
+  houseNumber   String?
+  city          String
+  state         String
+  country       String
+  lga           String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model UserDevice {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  deviceId   String
+  name       String?
+  deviceType DeviceType
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  isDeleted  Boolean    @default(false)
+  deletedAt  DateTime?
+}
+
+model Pocket {
+  id       String     @id @default(uuid())
+  userId   String
+  name     String // e.g., "Main Balance", "Rent 2027"
+  type     PocketType
+  balance  Decimal    @default(0.00) @db.Decimal(19, 4)
+  currency String     @default("NGN")
+
+  // Specific configurations for savings pockets
+  interestRate Decimal?  @db.Decimal(5, 4) // e.g., 0.1200 for 12% APR
+  lockedUntil  DateTime? // Enforces withdrawal restrictions
+  targetAmount Decimal?  @db.Decimal(19, 4)
+  isActive     Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[] // Tracks history per pocket
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  pocketId    String // Links the transaction to a specific pocket
+  amount      Decimal  @db.Decimal(19, 4)
+  type        String // "CREDIT" or "DEBIT"
+  reference   String   @unique
+  description String?
+  status      String // "SUCCESS", "FAILED"
+  createdAt   DateTime @default(now())
+
+  pocket Pocket @relation(fields: [pocketId], references: [id])
+}
+
+// Keep all enums at the bottom
+enum UserRole {
+  ADMIN
+  USER
+  BUSINESS
+}
+
+enum DeviceType {
+  ANDROID
+  IOS
+}
+
+enum PocketType {
+  MAIN
+  LOCKED
+  TARGET
+  FLEXIBLE
 }

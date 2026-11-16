@@ -8,16 +8,39 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const envSchema_1 = require("./envSchema");
+const prisma_service_1 = require("./common/services/prisma/prisma.service");
+const monnify_service_1 = require("./common/services/monnify/monnify.service");
+const mono_service_1 = require("./common/services/mono/mono.service");
+const http_client_1 = require("@nestjs/http-client");
+const cache_manager_1 = require("@nestjs/cache-manager");
+const user_auth_module_1 = require("./modules/user-auth/user-auth.module");
+const user_module_1 = require("./modules/user/user.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: ['.env-local', '.env.local', '.env'],
+                validationSchema: envSchema_1.baseEnvSchema,
+            }),
+            http_client_1.HttpClientModule.register({
+                interceptors: [],
+            }),
+            cache_manager_1.CacheModule.register({
+                isGlobal: true,
+            }),
+            user_auth_module_1.UserAuthModule,
+            user_module_1.UserModule,
+        ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, prisma_service_1.PrismaService, monnify_service_1.MonnifyService, mono_service_1.MonoService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
