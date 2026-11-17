@@ -54,8 +54,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # - name: Generate Prisma Client
-      #   run: pnpm --filter @spike/database generate
+      - name: Generate Prisma Client
+        run: pnpm --filter @spike/database generate
 
       - name: Build @spike/shared
         run: pnpm --filter @spike/shared build
