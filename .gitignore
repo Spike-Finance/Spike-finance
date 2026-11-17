@@ -1,15 +1,11 @@
 node_modules
+dist
+**/dist
+.next
+**/.next
+.turbo
+**/.turbo
 
-.env
-
-./apps/**/.next
-
-./apps/**/node_modules
-
-./apps/**/.turbo
-
-./apps/**/dist
-
-./apps/**/.turbo
-
-./apps/**/.env
+.env*.local
+.env-local
+config.bat

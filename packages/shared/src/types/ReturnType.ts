@@ -18,6 +18,7 @@ export class ServerResponse<T> {
         }
     }) {
         this.status = status;
+        this.message = message;
         this.data = data;
         this.error = error;
         this.pagination = pagination;
