@@ -11,6 +11,7 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "build": "prisma generate"
   }
 }
