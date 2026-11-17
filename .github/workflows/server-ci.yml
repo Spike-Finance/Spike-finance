@@ -4,23 +4,23 @@ on:
   push:
     branches: [main, development]
     paths:
-      - 'apps/server/**'
-      - 'packages/database/**'
-      - 'packages/shared/**'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
-      - 'turbo.json'
-      - '.github/workflows/server-ci.yml'
+      - "apps/server/**"
+      - "packages/database/**"
+      - "packages/shared/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "turbo.json"
+      - ".github/workflows/server-ci.yml"
   pull_request:
     branches: [main, development]
     paths:
-      - 'apps/server/**'
-      - 'packages/database/**'
-      - 'packages/shared/**'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
-      - 'turbo.json'
-      - '.github/workflows/server-ci.yml'
+      - "apps/server/**"
+      - "packages/database/**"
+      - "packages/shared/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "turbo.json"
+      - ".github/workflows/server-ci.yml"
   workflow_dispatch:
 
 concurrency:
@@ -45,13 +45,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm --filter @spike/database generate
+      # - name: Generate Prisma Client
+      #   run: pnpm --filter @spike/database generate
 
       - name: Build @spike/shared
         run: pnpm --filter @spike/shared build
