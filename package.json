@@ -3,7 +3,8 @@
     "private": true,
     "scripts": {
         "dev": "turbo run dev",
-        "build": "turbo run build"
+        "build": "turbo run build",
+        "build:server": "turbo run build --filter=...server"
     },
     "devDependencies": {
         "turbo": "^2.11.10"
