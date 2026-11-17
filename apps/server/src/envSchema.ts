@@ -13,4 +13,7 @@ export const baseEnvSchema = z.object({
   MONNIFY_BUSINESS_CODE: z.string(),
   MONNIFY_BASE_URL: z.url(),
   RESEND_API_KEY: z.string(),
+  RESEND_FROM_EMAIL: z.string().default('onboarding@resend.dev'),
+  SENT_API_KEY: z.string(),
+  SENT_API_URL: z.string(),
 });

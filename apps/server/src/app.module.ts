@@ -13,6 +13,8 @@ import { HttpClientModule } from '@nestjs/http-client';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserAuthModule } from './modules/user-auth/user-auth.module';
 import { UserModule } from './modules/user/user.module';
+import { SentService } from './common/services/sent/sent.service';
+import { EmailService } from './common/services/email/email.service';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { UserModule } from './modules/user/user.module';
     PrismaService,
     MonnifyService,
     MonoService,
+    SentService,
+    EmailService,
   ],
 })
 export class AppModule {}
