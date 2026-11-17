@@ -23,6 +23,9 @@ RUN pnpm install --frozen-lockfile
 FROM dependencies AS builder
 WORKDIR /app
 
+# Build-time placeholder so Prisma generate does not fail on missing DB connection
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
 # Copy source code
 COPY apps/server ./apps/server
 COPY packages/database ./packages/database
