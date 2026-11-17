@@ -1,0 +1,66 @@
+name: Server CI
+
+on:
+  push:
+    branches: [main, development]
+    paths:
+      - 'apps/server/**'
+      - 'packages/database/**'
+      - 'packages/shared/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'turbo.json'
+      - '.github/workflows/server-ci.yml'
+  pull_request:
+    branches: [main, development]
+    paths:
+      - 'apps/server/**'
+      - 'packages/database/**'
+      - 'packages/shared/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'turbo.json'
+      - '.github/workflows/server-ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Test & Build Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm --filter @spike/database generate
+
+      - name: Build @spike/shared
+        run: pnpm --filter @spike/shared build
+
+      - name: Typecheck Server
+        run: pnpm --filter server exec tsc --noEmit
+
+      - name: Run Server Unit Tests
+        run: pnpm --filter server test
+
+      - name: Build Server
+        run: pnpm --filter server build

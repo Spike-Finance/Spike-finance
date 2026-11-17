@@ -1,0 +1,16 @@
+node_modules
+apps/**/node_modules
+packages/**/node_modules
+.git
+.github
+.vscode
+dist
+apps/**/dist
+packages/**/dist
+.next
+apps/**/.next
+.turbo
+apps/**/.turbo
+.env*
+!packages/database/.env.example
+*.log

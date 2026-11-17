@@ -23,11 +23,14 @@ model User {
   password        String   @db.Text
   isEmailVerified Boolean  @default(false)
   isPhoneVerified Boolean  @default(false)
-  bvn             String?
-  NIN             String?
+  bvn             String? // store encrypted at application level
+  NIN             String? // store encrypted at application level
   dateOfBirth     String?
-  transactionPin  String?
+  transactionPin  String? // store hashed (argon2/bcrypt), never plain text
   isLoggedIn      Boolean  @default(false)
+  kycTier         KycTier  @default(TIER_0)
+
+  tag Tag?
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -41,6 +44,39 @@ model User {
   addresses Address[]
 
   pockets Pocket[]
+
+  favouriteTags FavouriteTag[]
+  auditLogs     AuditLog[]
+
+  pocketMembers PocketMember[]
+}
+
+model Tag {
+  id     String @id @default(cuid())
+  userId String @unique
+  tag    String @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model FavouriteTag {
+  id     String @id @default(cuid())
+  userId String
+  tag    String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, tag])
 }
 
 model Address {
@@ -62,7 +98,7 @@ model Address {
 }
 
 model UserDevice {
-  id         String     @id @default(cuid())
+  id         String     @id @default(uuid())
   userId     String
   user       User       @relation(fields: [userId], references: [id])
   deviceId   String
@@ -75,37 +111,182 @@ model UserDevice {
 }
 
 model Pocket {
-  id       String     @id @default(uuid())
-  userId   String
-  name     String // e.g., "Main Balance", "Rent 2027"
-  type     PocketType
-  balance  Decimal    @default(0.00) @db.Decimal(19, 4)
-  currency String     @default("NGN")
+  id        String       @id @default(uuid())
+  userId    String
+  productId String?
+  name      String // e.g., "Main Balance", "Rent 2027"
+  type      PocketType
+  status    PocketStatus @default(ACTIVE)
+  // Running balance cache. Source of truth is LedgerEntry. Enforced >= 0 by a DB CHECK constraint.
+  balance   Decimal      @default(0.00) @db.Decimal(19, 4)
+  currency  String       @default("NGN")
+  // Optimistic concurrency: increment on every balance change and update WHERE version = ?
+  version   Int          @default(0)
 
   // Specific configurations for savings pockets
-  interestRate Decimal?  @db.Decimal(5, 4) // e.g., 0.1200 for 12% APR
-  lockedUntil  DateTime? // Enforces withdrawal restrictions
-  targetAmount Decimal?  @db.Decimal(19, 4)
-  isActive     Boolean   @default(true)
+  lockedUntil   DateTime? // Enforces withdrawal restrictions
+  targetAmount  Decimal?  @db.Decimal(19, 4)
+  isActive      Boolean   @default(true)
+  lastAccruedAt DateTime? @db.Date // last date interest was accrued for this pocket
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id])
-  transactions Transaction[] // Tracks history per pocket
+  user             User                   @relation(fields: [userId], references: [id])
+  product          Product?               @relation(fields: [productId], references: [id])
+  ledgerAccount    LedgerAccount?
+  interestAccruals InterestAccrual[]
+  balanceSnapshots DailyBalanceSnapshot[]
+  pocketMembers    PocketMember[]
+
+  @@index([userId])
+  @@index([isActive, type])
+  @@index([status, lastAccruedAt])
 }
 
-model Transaction {
-  id          String   @id @default(uuid())
-  pocketId    String // Links the transaction to a specific pocket
-  amount      Decimal  @db.Decimal(19, 4)
-  type        String // "CREDIT" or "DEBIT"
-  reference   String   @unique
-  description String?
-  status      String // "SUCCESS", "FAILED"
-  createdAt   DateTime @default(now())
+model PocketMember {
+  id        String     @id @default(nanoid())
+  userId    String
+  pocketId  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  isDeleted Boolean    @default(false)
+  deletedAt DateTime?
+  role      PocketRole @default(MEMBER)
+
+  user   User   @relation(fields: [userId], references: [id])
+  pocket Pocket @relation(fields: [pocketId], references: [id])
+}
+
+enum PocketRole {
+  MEMBER
+  ADMIN
+}
+
+// A savings product (e.g. "Flexible Saver", "90-day Locked"). Rates live in ProductRate
+// so they can change over time without losing history.
+model Product {
+  id                     String     @id @default(uuid())
+  name                   String     @unique
+  type                   PocketType
+  isActive               Boolean    @default(true)
+  minDeposit             Decimal    @default(0) @db.Decimal(19, 4)
+  maxBalance             Decimal?   @db.Decimal(19, 4)
+  lockDays               Int? // for LOCKED products
+  maxWithdrawalsPerMonth Int?
+  earlyBreakPenaltyRate  Decimal?   @db.Decimal(7, 6) // fraction of accrued interest forfeited, e.g. 0.500000
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
+
+  rates   ProductRate[]
+  pockets Pocket[]
+}
+
+// Annual interest rate (fraction, 0.120000 = 12% p.a.) effective for a date range and balance band.
+model ProductRate {
+  id            String    @id @default(uuid())
+  productId     String
+  annualRate    Decimal   @db.Decimal(7, 6)
+  minBalance    Decimal   @default(0) @db.Decimal(19, 4)
+  maxBalance    Decimal?  @db.Decimal(19, 4)
+  effectiveFrom DateTime  @db.Date
+  effectiveTo   DateTime? @db.Date // null = currently active
+  createdAt     DateTime  @default(now())
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId, effectiveFrom])
+}
+
+// One row per pocket per day. The unique key makes the accrual job safe to re-run.
+// Payout posts ledger entries (INTEREST_EXPENSE -> pocket) and links the transaction.
+model InterestAccrual {
+  id            String                @id @default(uuid())
+  pocketId      String
+  accrualDate   DateTime              @db.Date
+  balanceBasis  Decimal               @db.Decimal(19, 4) // balance used for the calculation
+  annualRate    Decimal               @db.Decimal(7, 6)
+  amount        Decimal               @db.Decimal(19, 8) // keep extra precision; round only at payout
+  status        InterestAccrualStatus @default(ACCRUED)
+  transactionId String?               @unique // set when paid out
+  createdAt     DateTime              @default(now())
+
+  pocket      Pocket       @relation(fields: [pocketId], references: [id])
+  transaction Transaction? @relation(fields: [transactionId], references: [id])
+
+  @@unique([pocketId, accrualDate])
+  @@index([status, accrualDate])
+}
+
+// End-of-day closing balance, so statements and reports don't scan the whole ledger.
+model DailyBalanceSnapshot {
+  id             String   @id @default(uuid())
+  pocketId       String
+  date           DateTime @db.Date
+  closingBalance Decimal  @db.Decimal(19, 4)
+  createdAt      DateTime @default(now())
 
   pocket Pocket @relation(fields: [pocketId], references: [id])
+
+  @@unique([pocketId, date])
+}
+
+// An account in the ledger. Every pocket has one; system accounts
+// (settlement, fees, bills) represent the "other side" of money entering/leaving the app.
+model LedgerAccount {
+  id        String            @id @default(uuid())
+  type      LedgerAccountType
+  name      String // e.g. "Monnify Settlement", "Fees Income"
+  currency  String            @default("NGN")
+  pocketId  String?           @unique // only set for USER_POCKET accounts
+  createdAt DateTime          @default(now())
+
+  pocket  Pocket?       @relation(fields: [pocketId], references: [id])
+  entries LedgerEntry[]
+
+  @@index([type])
+}
+
+// The business event (header). Its LedgerEntry rows must always sum to zero:
+// total DEBIT amount == total CREDIT amount.
+model Transaction {
+  id                String            @id @default(nanoid())
+  senderId          String
+  amount            Decimal           @db.Decimal(19, 4) // total value moved
+  currency          String            @default("NGN")
+  reference         String            @unique
+  // Provider idempotency (e.g. Monnify webhook): same provider+externalReference is processed once
+  provider          String?
+  externalReference String?
+  description       String?
+  status            TransactionStatus @default(SUCCESS)
+  type              TransactionType
+  createdAt         DateTime          @default(now())
+
+  entries         LedgerEntry[]
+  interestAccrual InterestAccrual?
+
+  @@unique([provider, externalReference])
+  @@index([senderId])
+  @@index([status, createdAt])
+}
+
+// One leg of a transaction. Immutable: never update or delete, post a reversal instead.
+model LedgerEntry {
+  id            String          @id @default(uuid())
+  transactionId String
+  accountId     String
+  direction     TransactionFlow // DEBIT or CREDIT
+  amount        Decimal         @db.Decimal(19, 4) // always positive
+  balanceAfter  Decimal?        @db.Decimal(19, 4) // account balance after posting (user pockets)
+  balanceBefore Decimal?        @db.Decimal(19, 4) // account balance before posting (user pockets)
+  createdAt     DateTime        @default(now())
+
+  transaction Transaction   @relation(fields: [transactionId], references: [id])
+  account     LedgerAccount @relation(fields: [accountId], references: [id])
+
+  @@index([transactionId])
+  @@index([accountId, createdAt])
 }
 
 // Keep all enums at the bottom
@@ -125,4 +306,95 @@ enum PocketType {
   LOCKED
   TARGET
   FLEXIBLE
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REVERSED
+}
+
+enum TransactionFlow {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionType {
+  WALLET_TOP_UP
+  SAVINGS
+  BILLS
+  TRANSFER
+  WITHDRAWAL
+  INTEREST
+  FEE
+  REVERSAL
+  EARLY_BREAK_PENALTY
+}
+
+enum LedgerAccountType {
+  USER_POCKET
+  SETTLEMENT
+  FEES
+  BILLS
+  SUSPENSE
+  INTEREST_EXPENSE
+}
+
+enum PocketStatus {
+  ACTIVE
+  FROZEN
+  CLOSED
+}
+
+enum InterestAccrualStatus {
+  ACCRUED
+  PAID
+  VOIDED
+}
+
+enum KycTier {
+  TIER_0
+  TIER_1
+  TIER_2
+  TIER_3
+}
+
+// Append-only record of admin actions and manual balance adjustments.
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  action     String // e.g. "POCKET_FROZEN", "BALANCE_ADJUSTMENT"
+  entityType String
+  entityId   String
+  metadata   Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+}
+
+// Daily comparison of our ledger against the provider's settlement report.
+model Reconciliation {
+  id            String               @id @default(uuid())
+  provider      String
+  date          DateTime             @db.Date
+  ledgerTotal   Decimal              @db.Decimal(19, 4)
+  providerTotal Decimal              @db.Decimal(19, 4)
+  difference    Decimal              @db.Decimal(19, 4)
+  status        ReconciliationStatus @default(PENDING)
+  notes         String?
+  createdAt     DateTime             @default(now())
+
+  @@unique([provider, date])
+}
+
+enum ReconciliationStatus {
+  PENDING
+  MATCHED
+  MISMATCH
+  RESOLVED
 }
