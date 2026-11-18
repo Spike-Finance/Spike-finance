@@ -13,6 +13,13 @@ import { HttpClientModule } from '@nestjs/http-client';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserAuthModule } from './modules/user-auth/user-auth.module';
 import { UserModule } from './modules/user/user.module';
+import { SentService } from './common/services/sent/sent.service';
+import { EmailService } from './common/services/email/email.service';
+import { BillsModule } from './modules/bills/bills.module';
+import { CardsModule } from './modules/cards/cards.module';
+import { SavingsModule } from './modules/savings/savings.module';
+import { TransferModule } from './modules/transfer/transfer.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 
 @Module({
   imports: [
@@ -29,6 +36,11 @@ import { UserModule } from './modules/user/user.module';
     }),
     UserAuthModule,
     UserModule,
+    BillsModule,
+    CardsModule,
+    SavingsModule,
+    TransferModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [
@@ -38,6 +50,8 @@ import { UserModule } from './modules/user/user.module';
     PrismaService,
     MonnifyService,
     MonoService,
+    SentService,
+    EmailService,
   ],
 })
 export class AppModule {}

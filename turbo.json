@@ -11,14 +11,15 @@
         "dist/**"
       ]
     },
+    "@spike/database#build": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "generate": {
-      "dependsOn": [
-        "^generate"
-      ]
+      "cache": false
     }
   }
 }

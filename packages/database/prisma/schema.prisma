@@ -14,16 +14,17 @@ datasource db {
 }
 
 model User {
-  id              String   @id @default(cuid())
+  id              String   @id @default(uuid())
   firstName       String?
   lastName        String?
   email           String?  @unique
   phone           String?  @unique
   userType        UserRole @default(USER)
-  password        String   @db.Text
+  password        String?  @db.Text
   isEmailVerified Boolean  @default(false)
   isPhoneVerified Boolean  @default(false)
   bvn             String? // store encrypted at application level
+  isBvnVerified   Boolean  @default(false)
   NIN             String? // store encrypted at application level
   dateOfBirth     String?
   transactionPin  String? // store hashed (argon2/bcrypt), never plain text
@@ -49,10 +50,51 @@ model User {
   auditLogs     AuditLog[]
 
   pocketMembers PocketMember[]
+
+  otps            otp[]
+  virtualAccounts VirtualAccount[]
+}
+
+model otp {
+  id        String    @id @default(uuid())
+  userId    String
+  code      String
+  method    OtpMethod
+  target    String
+  isUsed    Boolean   @default(false)
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, code])
+  @@index([target, code])
+}
+
+model VirtualAccount {
+  id            String   @id @default(uuid())
+  userId        String
+  bankName      String   @default("Moniepoint Microfinance Bank")
+  bankCode      String   @default("50515")
+  accountNumber String   @unique
+  accountName   String
+  currency      String   @default("NGN")
+  status        String   @default("ACTIVE")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum OtpMethod {
+  EMAIL
+  PHONE
 }
 
 model Tag {
-  id     String @id @default(cuid())
+  id     String @id @default(uuid())
   userId String @unique
   tag    String @unique
 
@@ -65,7 +107,7 @@ model Tag {
 }
 
 model FavouriteTag {
-  id     String @id @default(cuid())
+  id     String @id @default(uuid())
   userId String
   tag    String
 
@@ -80,7 +122,7 @@ model FavouriteTag {
 }
 
 model Address {
-  id            String  @id @default(cuid())
+  id            String  @id @default(uuid())
   userId        String
   streetAddress String
   houseNumber   String?
@@ -104,10 +146,14 @@ model UserDevice {
   deviceId   String
   name       String?
   deviceType DeviceType
+  ip         String?
+  location   String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   isDeleted  Boolean    @default(false)
   deletedAt  DateTime?
+
+  @@unique([userId, deviceId])
 }
 
 model Pocket {
@@ -145,7 +191,7 @@ model Pocket {
 }
 
 model PocketMember {
-  id        String     @id @default(nanoid())
+  id        String     @id @default(uuid())
   userId    String
   pocketId  String
   createdAt DateTime   @default(now())
@@ -250,7 +296,7 @@ model LedgerAccount {
 // The business event (header). Its LedgerEntry rows must always sum to zero:
 // total DEBIT amount == total CREDIT amount.
 model Transaction {
-  id                String            @id @default(nanoid())
+  id                String            @id @default(uuid())
   senderId          String
   amount            Decimal           @db.Decimal(19, 4) // total value moved
   currency          String            @default("NGN")
@@ -299,6 +345,7 @@ enum UserRole {
 enum DeviceType {
   ANDROID
   IOS
+  WEB
 }
 
 enum PocketType {
@@ -397,4 +444,14 @@ enum ReconciliationStatus {
   MATCHED
   MISMATCH
   RESOLVED
+}
+
+model Waitlist {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
