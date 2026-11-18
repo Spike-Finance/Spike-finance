@@ -1,112 +1,179 @@
 "use client";
 
 import React from "react";
-import { Hero3DShowcase } from "./Hero3DShowcase";
+import Image from "next/image";
 import {
   Sparkles,
   ArrowRight,
-  ShieldCheck,
-  CheckCircle,
   Apple,
-  Star,
   Smartphone,
+  Home,
+  Target,
+  Percent,
+  CheckCircle2,
+  TrendingUp,
 } from "lucide-react";
 
 interface HeroSectionProps {
-  onOpenDownloadModal?: () => void;
+  onOpenWaitlistModal?: () => void;
 }
 
-export function HeroSection({ onOpenDownloadModal }: HeroSectionProps) {
+export function HeroSection({ onOpenWaitlistModal }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white">
-      {/* Background Subtle Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[650px] pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-12 left-1/4 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl" />
-        <div className="absolute top-24 right-1/4 w-96 h-96 bg-teal-100/30 rounded-full blur-3xl" />
-      </div>
-
+    <section className="relative pt-6 pb-16 lg:pt-10 lg:pb-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Clean PiggyVest-style Copy & CTAs */}
-          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
-            {/* ₦100 Bonus Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-900 text-xs sm:text-sm font-semibold mb-6 shadow-2xs hover:bg-emerald-100/80 transition-colors cursor-default">
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2cb42c]" />
-              </span>
-              <Sparkles className="w-4 h-4 text-emerald-600" />
-              <span>Claim your free ₦100 welcome bonus in under 3 minutes</span>
-            </div>
-
-            {/* Main Headline (PiggyVest Inspired) */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-slate-900 tracking-tight leading-[1.12] mb-6">
-              The Better Way to Save & Invest Your Spare Change.
+        {/* ================= TOP ROW: SPLIT HEADER (MATCHING SCREENSHOT) ================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-10 lg:mb-14">
+          {/* Left: Giant Bold Headline with Playful Sparkle Glyph */}
+          <div className="lg:col-span-7">
+            <h1 className="text-4xl sm:text-6xl lg:text-[68px] font-black text-slate-900 tracking-tight leading-[1.06]">
+              The better way{" "}
+              <span className="inline-flex items-center justify-center align-middle mx-1">
+                <svg
+                  width="42"
+                  height="42"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="text-emerald-500 inline-block animate-spin [animation-duration:14s]"
+                >
+                  <path
+                    d="M12 2L14.6 9.4L22 12L14.6 14.6L12 22L9.4 14.6L2 12L9.4 9.4L12 2Z"
+                    fill="#10B981"
+                  />
+                  <circle cx="12" cy="12" r="3" fill="#047857" />
+                </svg>
+              </span>{" "}
+              to save and invest.
             </h1>
+          </div>
 
-            {/* Sub-headline */}
-            <p className="text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl mb-8">
-              SPIKE helps thousands of Nigerians save and invest effortlessly. Automated round-ups, high-yield mutual funds, instant zero-fee transfers, and cashback on everyday spending.
+          {/* Right: Subtitle & Waitlist / App Badges (Matching Screenshot) */}
+          <div className="lg:col-span-5 flex flex-col items-start lg:pl-4">
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-6 font-normal">
+              SPIKE helps thousands of Nigerians achieve their financial goals by helping them save and invest their spare change with ease.
             </p>
 
-            {/* Primary Action Button & App Store Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto mb-10">
-              <button
-                type="button"
-                onClick={onOpenDownloadModal}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-slate-950 hover:bg-emerald-700 text-white font-bold text-base shadow-lg hover:shadow-xl transition-all duration-200 active:scale-98 cursor-pointer"
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+
+              {/* iPhone Badge */}
+              <div
+                onClick={onOpenWaitlistModal}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white text-black text-xs font-bold shadow-xs cursor-pointer hover:bg-blue-700 transition-colors  border border-slate-200 "
               >
-                <span>Create free account</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <div className="flex items-center gap-2.5 w-full sm:w-auto">
-                <button
-                  type="button"
-                  onClick={onOpenDownloadModal}
-                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border border-slate-300 hover:border-slate-800 text-slate-800 hover:text-black font-semibold text-xs sm:text-sm transition-all cursor-pointer"
-                >
-                  <Apple className="w-4 h-4 fill-current" />
-                  <span>App Store</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={onOpenDownloadModal}
-                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border border-slate-300 hover:border-slate-800 text-slate-800 hover:text-black font-semibold text-xs sm:text-sm transition-all cursor-pointer"
-                >
-                  <Smartphone className="w-4 h-4" />
-                  <span>Google Play</span>
-                </button>
-              </div>
-            </div>
-
-            {/* PiggyVest-style Social Trust Strip */}
-            <div className="pt-6 border-t border-slate-200 w-full flex flex-wrap items-center justify-center lg:justify-start gap-y-3 gap-x-6 text-xs text-slate-500">
-              <div className="flex items-center gap-1.5">
-                <div className="flex text-amber-500">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
-                </div>
-                <span className="font-bold text-slate-800">4.9/5 from 10,000+ ratings</span>
+                <Apple className="w-4 h-4 fill-current" />
+                <span>Get on iPhone <span className="text-[10px] text-blue-200 font-normal ml-0.5">(Soon)</span></span>
               </div>
 
-              <div className="flex items-center gap-1.5 text-slate-600">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Bank-grade 256-bit encryption</span>
-              </div>
-
-              <div className="flex items-center gap-1.5 text-slate-600">
-                <CheckCircle className="w-4 h-4 text-emerald-600" />
-                <span>NDIC insured partner banks</span>
+              {/* Android Badge */}
+              <div
+                onClick={onOpenWaitlistModal}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-xs cursor-pointer hover:bg-slate-50 transition-colors"
+              >
+                <Smartphone className="w-4 h-4 text-emerald-600" />
+                <span>Get on Android <span className="text-[10px] text-slate-400 font-normal ml-0.5">(Soon)</span></span>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Column: 3D Asset Showcase with Gold Coin, Obsidian Card & Smart Vault */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <Hero3DShowcase />
+        {/* ================= MAIN HERO BANNER VISUAL (MATCHING SCREENSHOT) ================= */}
+        <div className="relative rounded-[32px] sm:rounded-[44px] overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-100 aspect-[16/10] sm:aspect-[16/9] max-h-[580px] w-full">
+          {/* Main Authentic Lifestyle Photograph */}
+          <Image
+            src="/images/spike-hero-lifestyle.jpg"
+            alt="Young Nigerian friends saving with SPIKE in the park"
+            fill
+            priority
+            className="object-cover object-[center_28%]"
+          />
+
+          {/* Subtle Gradient Overlays for Floating Card Readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+
+          {/* ================= FLOATING CHIP 1: My House Rent (Left) ================= */}
+          <div className="absolute top-[28%] sm:top-[38%] left-3 sm:left-8 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce [animation-duration:5s] hover:scale-105 transition-transform duration-200 cursor-pointer">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/15 text-amber-600 flex items-center justify-center shrink-0">
+              <Home className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">
+                My House Rent
+              </p>
+              <p className="text-[10px] text-slate-500 leading-tight">
+                Target Vault
+              </p>
+            </div>
+            <span className="text-xs sm:text-sm font-black text-slate-900 ml-2 sm:ml-4">
+              + ₦80,000
+            </span>
+          </div>
+
+          {/* ================= FLOATING CHIP 2: Group trip to Cape Verde (Bottom Center) ================= */}
+          <div className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center gap-3 hover:scale-105 transition-transform duration-200 cursor-pointer max-w-[90%] sm:max-w-none">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
+              <Target className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight truncate">
+                Group trip to Cape Verde
+              </p>
+              <p className="text-[10px] text-slate-500 leading-tight">
+                Target Savings
+              </p>
+            </div>
+            <span className="text-xs sm:text-sm font-black text-emerald-700 ml-2 sm:ml-4 shrink-0">
+              + ₦15,000
+            </span>
+          </div>
+
+          {/* ================= FLOATING CHIP 3: Interest for July (Right) ================= */}
+          <div className="absolute top-[32%] sm:top-[42%] right-3 sm:right-8 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce [animation-duration:6s] hover:scale-105 transition-transform duration-200 cursor-pointer">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center shrink-0 font-bold">
+              <Percent className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">
+                Interest for July
+              </p>
+              <p className="text-[10px] text-slate-500 leading-tight">
+                Mutual Fund Sweep
+              </p>
+            </div>
+            <span className="text-xs sm:text-sm font-black text-blue-600 ml-2 sm:ml-4">
+              + ₦305,000
+            </span>
+          </div>
+
+          {/* ================= FLOATING CHIP 4: Chicken Republic Round-Up (Top Right - Little Difference) ================= */}
+          <div className="absolute top-4 sm:top-6 right-4 sm:right-12 z-20 bg-slate-950/90 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-emerald-500/30 hidden sm:flex items-center gap-2.5 text-white">
+            <div className="w-7 h-7 rounded-full overflow-hidden border border-amber-400/50 shadow-xs shrink-0">
+              <Image
+                src="/images/spike-3d-coin.jpg"
+                alt="3D Naira Coin"
+                width={36}
+                height={36}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-white leading-tight">
+                Chicken Republic Round-Up
+              </p>
+              <p className="text-[9px] text-emerald-400 leading-tight">
+                Spare Change Saved
+              </p>
+            </div>
+            <span className="text-xs font-black text-emerald-400 ml-2">
+              + ₦400
+            </span>
+          </div>
+
+          {/* ================= FLOATING CHIP 5: ₦100 Welcome Bonus (Top Left - Little Difference) ================= */}
+          <div className="absolute top-4 sm:top-6 left-4 sm:left-12 z-20 bg-emerald-950/90 backdrop-blur-md rounded-full px-3.5 py-1.5 shadow-xl border border-emerald-500/40 hidden sm:flex items-center gap-2 text-white">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-xs font-bold text-emerald-200">
+              ₦100 Bonus Reserved
+            </span>
           </div>
         </div>
       </div>

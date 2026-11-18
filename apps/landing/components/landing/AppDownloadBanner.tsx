@@ -2,13 +2,13 @@
 
 import React from "react";
 import Image from "next/image";
-import { Apple, Smartphone, Sparkles, ShieldCheck } from "lucide-react";
+import { Sparkles, ShieldCheck, ArrowRight, Apple, Smartphone, Clock } from "lucide-react";
 
 interface AppDownloadBannerProps {
-  onOpenDownloadModal?: () => void;
+  onOpenWaitlistModal?: () => void;
 }
 
-export function AppDownloadBanner({ onOpenDownloadModal }: AppDownloadBannerProps) {
+export function AppDownloadBanner({ onOpenWaitlistModal }: AppDownloadBannerProps) {
   return (
     <section className="py-16 sm:py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,52 +18,46 @@ export function AppDownloadBanner({ onOpenDownloadModal }: AppDownloadBannerProp
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
             <div className="lg:col-span-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold mb-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold mb-4">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>₦100 Free Welcome Bonus on Signup</span>
+                <span>₦100 Free Welcome Bonus Reserved on Signup</span>
               </div>
 
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4 leading-tight">
-                Join thousands of Nigerians saving with SPIKE today
+                Be the first to experience SPIKE when we launch
               </h2>
 
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-xl mb-8">
-                Download the app, complete quick BVN verification in 60 seconds, and let your daily spare change build your future.
+                Join 10,000+ Nigerians on the waitlist. Get early access to automated spare change investing, high-yield vaults, and instant zero-fee transfers.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <button
                   type="button"
-                  onClick={onOpenDownloadModal}
-                  className="inline-flex items-center gap-3 px-7 py-3.5 rounded-xl bg-white text-slate-950 font-bold hover:bg-slate-100 transition-all active:scale-95 shadow-md cursor-pointer"
+                  onClick={onOpenWaitlistModal}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-base shadow-lg transition-all active:scale-95 cursor-pointer"
                 >
-                  <Apple className="w-5 h-5 fill-current" />
-                  <div className="text-left">
-                    <span className="block text-[9px] uppercase tracking-wider text-slate-500">
-                      Download on
-                    </span>
-                    <span className="block text-sm font-extrabold leading-tight">App Store</span>
-                  </div>
+                  <span>Join the Waitlist</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={onOpenDownloadModal}
-                  className="inline-flex items-center gap-3 px-7 py-3.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all active:scale-95 shadow-md cursor-pointer"
-                >
-                  <Smartphone className="w-5 h-5 text-emerald-200" />
-                  <div className="text-left">
-                    <span className="block text-[9px] uppercase tracking-wider text-emerald-200">
-                      Get it on
-                    </span>
-                    <span className="block text-sm font-extrabold leading-tight">Google Play</span>
+                {/* Coming Soon Device Badge */}
+                <div className="inline-flex items-center gap-2.5 px-4 py-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 text-xs font-semibold">
+                  <div className="flex items-center gap-1 text-slate-400">
+                    <Apple className="w-4 h-4 fill-current" />
+                    <Smartphone className="w-4 h-4" />
                   </div>
-                </button>
+                  <span className="w-1 h-1 rounded-full bg-slate-600" />
+                  <span className="flex items-center gap-1 text-emerald-400">
+                    <Clock className="w-3.5 h-3.5" />
+                    Coming Soon to iOS & Android
+                  </span>
+                </div>
               </div>
 
               <div className="mt-8 flex items-center gap-2 text-xs text-slate-400">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Zero maintenance charges • NDIC insured partner banks</span>
+                <span>Zero spam • 256-bit encryption • NDIC insured partner banks</span>
               </div>
             </div>
 

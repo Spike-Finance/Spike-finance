@@ -6,9 +6,11 @@ import { Menu, X, ArrowRight, Sparkles } from "lucide-react";
 
 interface NavbarProps {
   onOpenWaitlistModal?: () => void;
+  onOpenDownloadModal?: () => void;
 }
 
-export function Navbar({ onOpenWaitlistModal }: NavbarProps) {
+export function Navbar({ onOpenWaitlistModal, onOpenDownloadModal }: NavbarProps) {
+  const openModal = onOpenWaitlistModal || onOpenDownloadModal;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -81,7 +83,7 @@ export function Navbar({ onOpenWaitlistModal }: NavbarProps) {
             <div className="flex md:hidden items-center gap-2">
               <button
                 type="button"
-                onClick={onOpenWaitlistModal}
+                onClick={openModal}
                 className="px-3 py-1.5 rounded-lg bg-emerald-700 text-white text-xs font-bold cursor-pointer"
               >
                 Waitlist
@@ -120,7 +122,7 @@ export function Navbar({ onOpenWaitlistModal }: NavbarProps) {
               type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
-                if (onOpenWaitlistModal) onOpenWaitlistModal();
+                if (openModal) openModal();
               }}
               className="w-full py-3.5 rounded-xl bg-emerald-700 text-white font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >

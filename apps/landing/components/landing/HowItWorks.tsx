@@ -1,109 +1,221 @@
+"use client";
+
 import React from "react";
-import { UserCheck, SlidersHorizontal, Gift, ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import Image from "next/image";
+import {
+  ChevronLeft,
+  Lock,
+  ArrowUpRight,
+  UtensilsCrossed,
+  Smartphone,
+  Car,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
-export function HowItWorks() {
-  const steps = [
-    {
-      number: "01",
-      icon: UserCheck,
-      title: "Verify in Seconds",
-      badge: "Under 60 secs",
-      description:
-        "Download the app, create your account, and complete instant biometric & BVN verification. Your data is 256-bit encrypted and never shared.",
-      detail: "Zero paper forms • Instant NUBAN generation",
-    },
-    {
-      number: "02",
-      icon: SlidersHorizontal,
-      title: "Link & Set Your Rules",
-      badge: "Fully Customizable",
-      description:
-        "Securely connect your primary debit card or bank account via Mono, Paystack, or Stitch. Choose your round-up rule (e.g., nearest ₦500) or recurring deposit schedule.",
-      detail: "Pause, edit, or adjust rules anytime with one tap",
-    },
-    {
-      number: "03",
-      icon: Gift,
-      title: "Get ₦100 Free & Grow",
-      badge: "Instant Reward",
-      description:
-        "Claim an instant ₦100 welcome bonus straight to your wallet. Spend as usual and watch your spare change automatically sweep into SEC-regulated mutual funds.",
-      detail: "Daily interest accrual • Withdraw funds whenever you want",
-    },
-  ];
+interface HowItWorksProps {
+  onOpenWaitlistModal?: () => void;
+}
 
+export function HowItWorks({ onOpenWaitlistModal }: HowItWorksProps) {
   return (
-    <section id="how-it-works" className="py-20 lg:py-28 bg-slate-50 border-t border-slate-200/80 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold mb-3">
-            <Zap className="w-3.5 h-3.5" />
-            <span>Fast & Seamless Onboarding</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Start building wealth in under 3 minutes
+    <section id="how-it-works" className="py-20 lg:py-28 bg-[#070D18] text-white relative overflow-hidden">
+      {/* Background Subtle Mesh */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.12),transparent_70%)] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header (Matching PiggyVest Top Style) */}
+        <div className="max-w-3xl mb-14">
+          <p className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 mb-2">
+            How SPIKE Works
+          </p>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-3">
+            Simple, automated wealth building for everyone
           </h2>
-          <p className="text-base sm:text-lg text-slate-600">
-            No complex paperwork, no branch visits, and no minimum capital required. Here is how simple it is:
+          <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+            SPIKE offers automated spare change round-ups and pre-vetted, SEC-regulated mutual fund opportunities with yields of up to 16.5% p.a.
           </p>
         </div>
 
-        {/* 3-Step Horizontal Stepper */}
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Connector Line (visible on desktop) */}
-          <div className="hidden md:block absolute top-1/2 left-[18%] right-[18%] h-0.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-400 -translate-y-16 -z-0" />
+        {/* 3 Large Showcase Cards (Matching Uploaded Screenshot 1:1) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* ================= CARD 1: VIBRANT PURPLE ================= */}
+          <div className="flex flex-col">
+            {/* Visual Box */}
+            <div className="aspect-[1/1] sm:aspect-[0.95/1] rounded-[32px] bg-[#6B21A8] p-5 sm:p-6 flex flex-col justify-center space-y-3 shadow-xl overflow-hidden relative group">
+              <div className="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none" />
 
-          {steps.map((step, idx) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={step.number}
-                className="relative z-10 bg-white rounded-3xl p-7 sm:p-8 border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    {/* Step Icon */}
-                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-700 group-hover:bg-emerald-700 group-hover:text-white transition-all duration-300 shadow-2xs">
-                      <Icon className="w-7 h-7" />
-                    </div>
-
-                    {/* Step Number */}
-                    <span className="text-3xl font-black text-slate-200 group-hover:text-emerald-300/60 transition-colors">
-                      {step.number}
-                    </span>
-                  </div>
-
-                  <div className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 mb-3">
-                    {step.badge}
-                  </div>
-
-                  <h3 className="text-xl font-bold text-slate-900 mb-2.5">
-                    {step.title}
-                  </h3>
-
-                  <p className="text-slate-600 text-sm leading-relaxed mb-6">
-                    {step.description}
-                  </p>
+              {/* Stacked White Card 1 */}
+              <div className="bg-white rounded-2xl p-3 shadow-md flex items-center gap-3 transition-transform duration-300 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center shrink-0">
+                  <UtensilsCrossed className="w-6 h-6 text-amber-600" />
                 </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-medium text-emerald-700">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>{step.detail}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-slate-900 truncate">Chicken Republic order</p>
+                  <p className="text-[10px] text-emerald-600 font-semibold">16.5% Return in 6 months</p>
+                  <div className="flex items-center justify-between text-[11px] mt-0.5">
+                    <span className="font-extrabold text-slate-900">₦2,600 spent</span>
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">+₦400 saved</span>
+                  </div>
                 </div>
               </div>
-            );
-          })}
+
+              {/* Stacked White Card 2 */}
+              <div className="bg-white rounded-2xl p-3 shadow-md flex items-center gap-3 transition-transform duration-300 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center shrink-0">
+                  <Smartphone className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-slate-900 truncate">MTN Data recharge</p>
+                  <p className="text-[10px] text-purple-600 font-semibold">Found Money 2% Cashback</p>
+                  <div className="flex items-center justify-between text-[11px] mt-0.5">
+                    <span className="font-extrabold text-slate-900">₦5,000 unit</span>
+                    <span className="font-bold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded">+₦100 bonus</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stacked White Card 3 */}
+              <div className="bg-white rounded-2xl p-3 shadow-md flex items-center gap-3 transition-transform duration-300 group-hover:-translate-y-0.5">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Car className="w-6 h-6 text-emerald-600" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-slate-900 truncate">Bolt ride to Ikeja</p>
+                  <p className="text-[10px] text-emerald-600 font-semibold">Nearest ₦500 rule</p>
+                  <div className="flex items-center justify-between text-[11px] mt-0.5">
+                    <span className="font-extrabold text-slate-900">₦4,200 spent</span>
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">+₦300 saved</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Content Under Card 1 */}
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-white mb-2">
+                Flexible round-up options
+              </h3>
+              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Choose from a variety of round-up tiers (nearest ₦100 to ₦1,000) designed to fit your spending habits, whether you prefer gradual micro-drops or fast capital buildup.
+              </p>
+            </div>
+          </div>
+
+          {/* ================= CARD 2: MINT SAGE GREEN ================= */}
+          <div className="flex flex-col">
+            {/* Visual Box */}
+            <div className="aspect-[1/1] sm:aspect-[0.95/1] rounded-[32px] bg-[#D1F7E5] p-6 flex flex-col items-center justify-center shadow-xl overflow-hidden relative group">
+              {/* Center Wavy Bush / Cloud Graphic */}
+              <div className="w-full flex items-center justify-center relative">
+                {/* Wavy Lime Green Cloud Silhouette */}
+                <div className="flex items-center justify-center gap-1 opacity-90 scale-110">
+                  <div className="w-10 h-10 rounded-full bg-[#86EFAC] -mr-3" />
+                  <div className="w-14 h-14 rounded-full bg-[#4ADE80] -mr-3" />
+                  <div className="w-20 h-20 rounded-full bg-[#22C55E]" />
+                  <div className="w-16 h-16 rounded-full bg-[#4ADE80] -ml-4" />
+                  <div className="w-12 h-12 rounded-full bg-[#86EFAC] -ml-3" />
+                </div>
+
+                {/* Floating Dark Emerald Badge in Center */}
+                <div className="absolute z-10 bg-[#065F46] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-emerald-400/40 transition-transform duration-300 group-hover:scale-105">
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-2xl sm:text-3xl font-black tracking-tight leading-none">
+                        16.50%
+                      </span>
+                      <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-950 flex items-center justify-center text-[10px] font-bold">
+                        ▲
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-emerald-200/90 font-semibold tracking-wide uppercase mt-1">
+                      Annual Yield
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Content Under Card 2 */}
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-white mb-2">
+                Competitive returns
+              </h3>
+              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Benefit from high-yield SEC-regulated money market mutual funds that maximize your returns, helping you beat Nigerian inflation and reach your financial goals faster.
+              </p>
+            </div>
+          </div>
+
+          {/* ================= CARD 3: WARM AMBER GOLD ================= */}
+          <div className="flex flex-col">
+            {/* Visual Box */}
+            <div className="aspect-[1/1] sm:aspect-[0.95/1] rounded-[32px] bg-[#F59E0B] p-5 sm:p-6 flex flex-col justify-end shadow-xl overflow-hidden relative group">
+              {/* White In-App Mockup Frame (Sliding Up from Bottom) */}
+              <div className="w-full bg-white rounded-t-3xl pt-3.5 px-4 pb-4 shadow-2xl text-slate-900 transition-transform duration-300 group-hover:-translate-y-2">
+                {/* Header with Back Chevron */}
+                <div className="flex items-center justify-between pb-2 mb-2 text-slate-600 text-xs">
+                  <ChevronLeft className="w-4 h-4 cursor-pointer" />
+                  <span className="font-bold text-slate-900">Mutual Fund Sweep</span>
+                  <div className="w-4" />
+                </div>
+
+                {/* Blue Decorative Card with Padlock */}
+                <div className="rounded-xl p-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white flex items-center justify-center mb-2.5 shadow-sm">
+                  <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center">
+                    <Lock className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-[10px] text-emerald-700 font-bold mb-1">
+                  <span>SEC-Regulated Opportunity</span>
+                  <span className="text-emerald-600">✓ Verified</span>
+                </div>
+
+                <h4 className="text-xs font-black text-slate-900 leading-tight">
+                  MONEY MARKET MUTUAL FUND
+                </h4>
+                <p className="text-[10px] text-slate-500 mb-2.5">
+                  Managed by Certified Trustees
+                </p>
+
+                {/* Invest CTA Button */}
+                <button
+                  type="button"
+                  onClick={onOpenWaitlistModal}
+                  className="w-full py-2 rounded-xl bg-[#7E22CE] hover:bg-[#6B21A8] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                >
+                  Auto-Sweep ₦5,000
+                </button>
+
+                <p className="text-[9px] text-slate-400 text-center mt-2">
+                  Daily interest compounding • Zero lock-in penalty
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Content Under Card 3 */}
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-white mb-2">
+                Expertly curated investments
+              </h3>
+              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Save and invest in institutional money market portfolios managed by registered Nigerian asset managers to optimize your returns with minimal capital risk.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Quick Under-Stepper Note */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-slate-500">
-            Already have an account?{" "}
-            <a href="#download-app" className="text-emerald-700 font-bold hover:underline">
-              Download the app to log in &rarr;
-            </a>
-          </p>
+        {/* Section Bottom Waitlist CTA */}
+        <div className="mt-14 pt-8 border-t border-slate-800 text-center">
+          <button
+            type="button"
+            onClick={onOpenWaitlistModal}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg transition-all active:scale-95 cursor-pointer"
+          >
+            <span>Join the Waitlist & Claim ₦100</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </section>

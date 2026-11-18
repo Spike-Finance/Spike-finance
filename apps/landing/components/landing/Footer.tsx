@@ -1,58 +1,51 @@
 import React from "react";
 import { SpikeLogo } from "./SpikeLogo";
-import { Apple, Smartphone, ShieldCheck, Heart } from "lucide-react";
+import { ShieldCheck, Heart, ArrowRight, Apple, Smartphone, Clock } from "lucide-react";
 
 interface FooterProps {
-  onOpenDownloadModal?: () => void;
+  onOpenWaitlistModal?: () => void;
 }
 
-export function Footer({ onOpenDownloadModal }: FooterProps) {
+export function Footer({ onOpenWaitlistModal }: FooterProps) {
   return (
-    <footer id="download-app" className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-900">
+    <footer id="waitlist" className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Pre-Footer Call to Action Banner */}
+        {/* Pre-Footer Call to Action Banner (Waitlist Focus) */}
         <div className="relative rounded-3xl p-8 sm:p-12 bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 border border-emerald-500/30 overflow-hidden shadow-2xl mb-16">
           <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl">
             <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/80 border border-emerald-600/50 mb-4">
-              Get Started Today
+              Launching Soon in Nigeria
             </span>
             <h3 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
-              Join thousands of Nigerians putting their spare change to work
+              Small drops make an ocean. Start your journey with SPIKE.
             </h3>
             <p className="text-slate-300 text-sm sm:text-base mb-8 leading-relaxed">
-              Download SPIKE now, complete fast BVN verification, and receive your instant ₦100 welcome bonus in under 3 minutes.
+              Reserve your spot on the waitlist today and lock in your free ₦100 welcome bonus for launch day.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
               <button
                 type="button"
-                onClick={onOpenDownloadModal}
-                className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl bg-white text-slate-950 font-bold hover:bg-slate-100 transition-all active:scale-95 shadow-md cursor-pointer"
+                onClick={onOpenWaitlistModal}
+                className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-white text-slate-950 font-bold hover:bg-slate-100 transition-all active:scale-95 shadow-md cursor-pointer"
               >
-                <Apple className="w-5 h-5 fill-current" />
-                <div className="text-left">
-                  <span className="block text-[9px] uppercase tracking-wider text-slate-500">
-                    Download on
-                  </span>
-                  <span className="block text-sm font-extrabold leading-tight">App Store</span>
-                </div>
+                <span>Join the Waitlist</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
 
-              <button
-                type="button"
-                onClick={onOpenDownloadModal}
-                className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 transition-all active:scale-95 shadow-md cursor-pointer"
-              >
-                <Smartphone className="w-5 h-5" />
-                <div className="text-left">
-                  <span className="block text-[9px] uppercase tracking-wider text-emerald-200">
-                    Get it on
-                  </span>
-                  <span className="block text-sm font-extrabold leading-tight">Google Play</span>
+              <div className="inline-flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-950/80 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+                <div className="flex items-center gap-1">
+                  <Apple className="w-4 h-4 fill-current text-slate-300" />
+                  <Smartphone className="w-4 h-4 text-slate-300" />
                 </div>
-              </button>
+                <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                  Coming Soon to iOS & Android
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -113,27 +106,27 @@ export function Footer({ onOpenDownloadModal }: FooterProps) {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li>
-                <a href="#earn" className="hover:text-emerald-400 transition-colors">
+                <a href="#offerings" className="hover:text-emerald-400 transition-colors">
                   Found Money Cashback
                 </a>
               </li>
               <li>
-                <a href="#features" className="hover:text-emerald-400 transition-colors">
+                <a href="#offerings" className="hover:text-emerald-400 transition-colors">
                   Virtual NUBAN Accounts
                 </a>
               </li>
               <li>
-                <a href="#features" className="hover:text-emerald-400 transition-colors">
+                <a href="#offerings" className="hover:text-emerald-400 transition-colors">
                   Zero-Fee @tag Transfers
                 </a>
               </li>
               <li>
-                <a href="#features" className="hover:text-emerald-400 transition-colors">
+                <a href="#offerings" className="hover:text-emerald-400 transition-colors">
                   2-Tap Airtime & Data
                 </a>
               </li>
               <li>
-                <a href="#features" className="hover:text-emerald-400 transition-colors">
+                <a href="#offerings" className="hover:text-emerald-400 transition-colors">
                   Electricity & Cable TV
                 </a>
               </li>
