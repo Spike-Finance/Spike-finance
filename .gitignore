@@ -6,6 +6,8 @@ dist
 .turbo
 **/.turbo
 
+.env
+.env.*
 .env*.local
 .env-local
 config.bat
