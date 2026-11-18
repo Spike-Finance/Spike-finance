@@ -8,6 +8,8 @@
       "outputs": [
         ".next/**",
         "!.next/cache/**",
+        "apps/landing/.next/**",
+        "!apps/landing/.next/cache/**",
         "dist/**"
       ]
     },
