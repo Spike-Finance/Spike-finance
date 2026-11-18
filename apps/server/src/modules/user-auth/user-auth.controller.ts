@@ -33,10 +33,10 @@ import { RegisterDeviceDto } from './dto/registerDeviceDto';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
-@ApiTags('User Authentication & Onboarding')
+@ApiTags('Auth & KYC')
 @Controller('user-auth')
 export class UserAuthController {
-  constructor(private readonly userAuthService: UserAuthService) {}
+  constructor(private readonly userAuthService: UserAuthService) { }
 
   @Post('login-or-signup')
   @HttpCode(HttpStatus.OK)
