@@ -6,11 +6,12 @@ export const DEFAULT_SERVICE_TEMPLATE = '2bee1355-748a-472f-a1a5-27bc005a74d7';
 
 interface ISentMessagePayload {
   channel: Array<'sms' | 'whatsapp' | 'rcs'>;
-  template: {
+  template?: {
     id: string;
     [key: string]: any;
   };
   to: Array<string>;
+  text?: string;
 }
 
 export type ISentResponse = {
@@ -36,11 +37,17 @@ export type ISentResponse = {
 @Injectable()
 export class SentService {
   private logger = new Logger(SentService.name);
-  private readonly baseUrl = 'https://api.sent.io/v1/';
+  private readonly baseUrl: string;
+
   constructor(
     private readonly configService: ConfigService,
     private httpService: HttpClient,
-  ) {}
+  ) {
+    this.baseUrl = this.configService.get<string>(
+      'SENT_API_URL',
+      'https://api.sent.dm/v3/messages',
+    );
+  }
 
   public async sendMessage(
     payload: ISentMessagePayload,
@@ -52,7 +59,7 @@ export class SentService {
           body: JSON.stringify(payload),
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': this.configService.getOrThrow<string>('SENT_API_KEY'),
+            'Authorization': `Bearer ${this.configService.getOrThrow<string>('SENT_API_KEY')}`,
           },
         },
       );
