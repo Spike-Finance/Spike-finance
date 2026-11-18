@@ -1,6 +1,7 @@
 {
   "name": "spike",
   "private": true,
+  "packageManager": "pnpm@12.4.2",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
