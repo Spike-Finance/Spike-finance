@@ -1,25 +1,24 @@
 {
-    "name": "spike",
-    "private": true,
-    "scripts": {
-        "dev": "turbo run dev",
-        "build": "turbo run build",
-        "build:server": "turbo run build --filter=...server",
-        "build:landing": "turbo run build --filter=landing",
-        "dev:landing": "turbo run dev --filter=landing"
-    },
-    "devDependencies": {
-        "turbo": "^2.11.10"
-    },
-    "packageManager": "pnpm@12.4.2",
-    "dependencies": {
-        "@hookform/resolvers": "^7.0.5",
-        "@tanstack/react-query": "^5.107.1",
-        "axios": "^1.21.1",
-        "react-hook-form": "^7.92.0",
-        "tailwindcss": "^4.3.5",
-        "uniwind": "^1.13.2",
-        "zod": "^4.6.7",
-        "zustand": "^5.1.0"
-    }
+  "name": "spike",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "build:server": "turbo run build --filter=...server",
+    "build:landing": "turbo run build --filter=landing",
+    "dev:landing": "turbo run dev --filter=landing"
+  },
+  "devDependencies": {
+    "turbo": "^2.11.10"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^7.0.5",
+    "@tanstack/react-query": "^5.107.1",
+    "axios": "^1.21.1",
+    "react-hook-form": "^7.92.0",
+    "tailwindcss": "^4.3.5",
+    "uniwind": "^1.13.2",
+    "zod": "^4.6.7",
+    "zustand": "^5.1.0"
+  }
 }
