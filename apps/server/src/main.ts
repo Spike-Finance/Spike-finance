@@ -17,6 +17,7 @@ async function bootstrap() {
     allowedHeaders: [
       'Content-Type',
       'Authorization',
+      'X-Transaction-Pin',
       'Upload-Offset',
       'Upload-Length',
       'Tus-Resumable',
