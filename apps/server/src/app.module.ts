@@ -20,6 +20,8 @@ import { CardsModule } from './modules/cards/cards.module';
 import { SavingsModule } from './modules/savings/savings.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { TransactionPinModule } from './common/services/transaction-pin/transaction-pin.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -34,6 +36,15 @@ import { WalletModule } from './modules/wallet/wallet.module';
     CacheModule.register({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10
+        }
+      ]
+    }),
+    TransactionPinModule,
     UserAuthModule,
     UserModule,
     BillsModule,
@@ -54,4 +65,4 @@ import { WalletModule } from './modules/wallet/wallet.module';
     EmailService,
   ],
 })
-export class AppModule {}
+export class AppModule { }
