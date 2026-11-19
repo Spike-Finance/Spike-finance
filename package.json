@@ -1,12 +1,14 @@
 {
   "name": "spike",
   "private": true,
+  "packageManager": "pnpm@12.4.2",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "build:server": "turbo run build --filter=...server",
     "build:landing": "turbo run build --filter=landing",
-    "dev:landing": "turbo run dev --filter=landing"
+    "dev:landing": "turbo run dev --filter=landing",
+    "docker:server": "docker build -f apps/server/Dockerfile -t spike-server ."
   },
   "devDependencies": {
     "turbo": "^2.11.10"

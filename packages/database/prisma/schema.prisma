@@ -27,8 +27,13 @@ model User {
   isBvnVerified   Boolean  @default(false)
   NIN             String? // store encrypted at application level
   dateOfBirth     String?
-  transactionPin  String? // store hashed (argon2/bcrypt), never plain text
-  isLoggedIn      Boolean  @default(false)
+  transactionPin      String?   // store hashed (argon2/bcrypt), never plain text
+  pinFailedAttempts   Int       @default(0)
+  pinLockedUntil      DateTime?
+  pinRequiresRecovery Boolean   @default(false)
+  pinLockoutCount     Int       @default(0)
+  lastPinFailedAt     DateTime?
+  isLoggedIn          Boolean   @default(false)
   kycTier         KycTier  @default(TIER_0)
 
   tag Tag?
@@ -39,8 +44,11 @@ model User {
   deletedAt   DateTime?
   lastLoginAt DateTime?
   pushToken   String?
+  tokenVersion Int      @default(0)
 
-  userDevices UserDevice[]
+  userDevices         UserDevice[]
+  userSessions        UserSession[]
+  biometricChallenges BiometricChallenge[]
 
   addresses Address[]
 
@@ -140,20 +148,71 @@ model Address {
 }
 
 model UserDevice {
-  id         String     @id @default(uuid())
-  userId     String
-  user       User       @relation(fields: [userId], references: [id])
-  deviceId   String
-  name       String?
-  deviceType DeviceType
-  ip         String?
-  location   String?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  isDeleted  Boolean    @default(false)
-  deletedAt  DateTime?
+  id                    String     @id @default(uuid())
+  userId                String
+  user                  User       @relation(fields: [userId], references: [id])
+  deviceId              String
+  name                  String?
+  deviceType            DeviceType
+  ip                    String?
+  location              String?
+  isPrimaryDevice       Boolean    @default(false)
+  biometricPublicKey    String?    @db.Text
+  biometricEnabled      Boolean    @default(false)
+  biometricKeyAlgorithm String?
+  biometricEnrolledAt   DateTime?
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  isDeleted             Boolean    @default(false)
+  deletedAt             DateTime?
+
+  sessions            UserSession[]
+  biometricChallenges BiometricChallenge[]
 
   @@unique([userId, deviceId])
+  @@index([deviceId, biometricEnabled, isDeleted])
+}
+
+model BiometricChallenge {
+  id           String    @id @default(uuid())
+  userId       String
+  userDeviceId String
+  deviceId     String
+  challenge    String    @unique
+  isUsed       Boolean   @default(false)
+  usedAt       DateTime?
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device UserDevice @relation(fields: [userDeviceId], references: [id], onDelete: Cascade)
+
+  @@index([userId, deviceId, isUsed])
+  @@index([expiresAt])
+}
+
+model UserSession {
+  id               String      @id @default(uuid())
+  userId           String
+  deviceId         String?
+  userDeviceId     String?
+  refreshTokenHash String?
+  userAgent        String?
+  ipAddress        String?
+  location         String?
+  isRevoked        Boolean     @default(false)
+  revokedAt        DateTime?
+  revocationReason String?
+  lastActiveAt     DateTime    @default(now())
+  expiresAt        DateTime
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device           UserDevice? @relation(fields: [userDeviceId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRevoked])
+  @@index([userId, deviceId])
 }
 
 model Pocket {
@@ -422,6 +481,7 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@index([actorId, createdAt])
+  @@index([action, createdAt])
 }
 
 // Daily comparison of our ledger against the provider's settlement report.

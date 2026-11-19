@@ -34,6 +34,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/schedule": "^12.0.3",
     "@nestjs/swagger": "^12.1.1",
+    "@nestjs/throttler": "^6.8.0",
     "@prisma/client": "^6.0.0",
     "@spike/database": "workspace:*",
     "@spike/shared": "workspace:*",
